@@ -15,15 +15,29 @@ import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
 
 actor {
-  // Initialize the access control system
-  let accessControlState = AccessControl.initState();
+  // Stable storage for access control state (persists across upgrades)
+  stable var stableAdminAssigned : Bool = false;
+  stable var stableUserRoles : [(Principal, AccessControl.UserRole)] = [];
+
+  let accessControlState : AccessControl.AccessControlState = {
+    var adminAssigned = stableAdminAssigned;
+    userRoles = Map.fromIter<Principal, AccessControl.UserRole>(stableUserRoles.vals());
+  };
   include MixinAuthorization(accessControlState);
+
+  system func preupgrade() {
+    stableAdminAssigned := accessControlState.adminAssigned;
+    stableUserRoles := accessControlState.userRoles.entries().toArray();
+  };
 
   public type TherapistProfile = {
     name : Text;
     tagline : Text;
     bio : Text;
     photo : Blob;
+    contactEmail : Text;
+    contactPhone : Text;
+    contactAddress : Text;
   };
 
   public type CVEntry = {
@@ -125,11 +139,39 @@ actor {
 
   let userProfiles = Map.empty<Principal, UserProfile>();
 
-  var therapistProfile : TherapistProfile = {
+  // Keep stable var with OLD type for upgrade compatibility.
+  // The new contact fields are stored in separate stable vars below.
+  stable var therapistProfile : { name : Text; tagline : Text; bio : Text; photo : Blob } = {
     name = "Jane Doe";
     tagline = "Heal by the Sea";
     bio = "Certified therapist offering beach therapy sessions in Ostende, Belgium. Find peace, clarity, and well-being through nature-based therapy.";
     photo = Blob.fromArray([0]);
+  };
+
+  // New contact fields stored separately to avoid breaking upgrade compatibility
+  stable var stableContactEmail : Text = "";
+  stable var stableContactPhone : Text = "";
+  stable var stableContactAddress : Text = "Zeedijk, Oostende, Belgium";
+
+  // Helper: assemble the full profile from stable parts
+  func assembleProfile() : TherapistProfile {
+    {
+      name = therapistProfile.name;
+      tagline = therapistProfile.tagline;
+      bio = therapistProfile.bio;
+      photo = therapistProfile.photo;
+      contactEmail = stableContactEmail;
+      contactPhone = stableContactPhone;
+      contactAddress = stableContactAddress;
+    };
+  };
+
+  // Helper: persist a full profile back to stable parts
+  func persistProfile(p : TherapistProfile) {
+    therapistProfile := { name = p.name; tagline = p.tagline; bio = p.bio; photo = p.photo };
+    stableContactEmail := p.contactEmail;
+    stableContactPhone := p.contactPhone;
+    stableContactAddress := p.contactAddress;
   };
 
   let cvEntries = Map.empty<Text, CVEntry>();
@@ -163,7 +205,7 @@ actor {
 
   // Public endpoints - no authorization needed
   public query ({ caller }) func getTherapistProfile() : async TherapistProfile {
-    therapistProfile;
+    assembleProfile();
   };
 
   public query ({ caller }) func getAllCVEntries() : async [CVEntry] {
@@ -197,7 +239,7 @@ actor {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can perform this action");
     };
-    therapistProfile := profile;
+    persistProfile(profile);
   };
 
   public shared ({ caller }) func updateProfilePhoto(blob : Storage.ExternalBlob) : async () {
@@ -277,12 +319,15 @@ actor {
       Runtime.trap("Unauthorized: Only admins can perform this action");
     };
 
-    therapistProfile := {
+    persistProfile({
       name = "Jane Doe";
       tagline = "Heal by the Sea";
       bio = "Certified therapist offering beach therapy sessions in Ostende, Belgium. Find peace, clarity, and well-being through nature-based therapy.";
       photo = Blob.fromArray([0]);
-    };
+      contactEmail = "contact@beachtherapy.be";
+      contactPhone = "+32 (0)59 00 00 00";
+      contactAddress = "Zeedijk, Oostende, Belgium";
+    });
 
     cvEntries.clear();
     cvEntries.add(

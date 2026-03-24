@@ -15,7 +15,7 @@ export function HeroSection({ profile, photoUrl }: HeroSectionProps) {
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('/assets/generated/hero-beach-ostende.dim_1920x1080.jpg')`,
+          backgroundImage: `url('/assets/generated/hero-ostend-coastline.dim_1920x1080.jpg')`,
         }}
       />
       <div className="absolute inset-0 bg-gradient-to-r from-teal-dark/75 via-teal/40 to-transparent" />
@@ -39,7 +39,7 @@ export function HeroSection({ profile, photoUrl }: HeroSectionProps) {
             >
               Vind Balans
               <br />
-              <span className="text-sea-light">aan de Kust</span>
+              <span className="text-teal-dark">aan de Kust</span>
               <br />
               van Oostende
             </h1>

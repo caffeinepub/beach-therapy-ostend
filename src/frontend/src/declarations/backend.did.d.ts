@@ -105,6 +105,7 @@ export interface _SERVICE {
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getTherapistProfile' : ActorMethod<[], TherapistProfile>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
+  'claimAdminIfNoneExists' : ActorMethod<[], boolean>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'seedSampleData' : ActorMethod<[], undefined>,

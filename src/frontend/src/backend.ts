@@ -127,6 +127,9 @@ export interface TherapistProfile {
     tagline: string;
     name: string;
     photo: Uint8Array;
+    contactEmail: string;
+    contactPhone: string;
+    contactAddress: string;
 }
 export interface SessionContentItem {
     id: string;
@@ -174,6 +177,7 @@ export interface backendInterface {
     getCallerUserRole(): Promise<UserRole>;
     getTherapistProfile(): Promise<TherapistProfile>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
+    claimAdminIfNoneExists(): Promise<boolean>;
     isCallerAdmin(): Promise<boolean>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     seedSampleData(): Promise<void>;
@@ -490,6 +494,20 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor.getUserProfile(arg0);
             return from_candid_opt_n23(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async claimAdminIfNoneExists(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.claimAdminIfNoneExists();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.claimAdminIfNoneExists();
+            return result;
         }
     }
     async isCallerAdmin(): Promise<boolean> {

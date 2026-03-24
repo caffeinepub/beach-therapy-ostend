@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import type { ExternalBlob } from "../backend";
 import type {
   CVEntry,
@@ -6,6 +7,7 @@ import type {
   SessionContentItem,
   TherapistProfile,
 } from "../backend.d";
+import { loadConfig } from "../config";
 import { useActor } from "./useActor";
 
 export function useTherapistProfile() {
@@ -14,7 +16,15 @@ export function useTherapistProfile() {
     queryKey: ["therapistProfile"],
     queryFn: async () => {
       if (!actor)
-        return { name: "", tagline: "", bio: "", photo: new Uint8Array() };
+        return {
+          name: "",
+          tagline: "",
+          bio: "",
+          photo: new Uint8Array(),
+          contactEmail: "",
+          contactPhone: "",
+          contactAddress: "",
+        };
       return actor.getTherapistProfile();
     },
     enabled: !!actor && !isFetching,
@@ -211,6 +221,37 @@ export function useDeleteSessionContentItem() {
     onSuccess: () =>
       qc.invalidateQueries({ queryKey: ["sessionContentItems"] }),
   });
+}
+
+export function useTherapistPhotoUrl(
+  photo: Uint8Array | undefined,
+): string | null {
+  const [url, setUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!photo || photo.length <= 1) {
+      setUrl(null);
+      return;
+    }
+
+    const SENTINEL = "!caf!";
+    const decoded = new TextDecoder().decode(new Uint8Array(photo));
+
+    if (decoded.startsWith(SENTINEL)) {
+      const hash = decoded.substring(SENTINEL.length);
+      loadConfig().then((config) => {
+        const storageUrl = `${config.storage_gateway_url}/v1/blob/?blob_hash=${encodeURIComponent(hash)}&owner_id=${encodeURIComponent(config.backend_canister_id)}&project_id=${encodeURIComponent(config.project_id)}`;
+        setUrl(storageUrl);
+      });
+    } else {
+      const blob = new Blob([new Uint8Array(photo)], { type: "image/jpeg" });
+      const blobUrl = URL.createObjectURL(blob);
+      setUrl(blobUrl);
+      return () => URL.revokeObjectURL(blobUrl);
+    }
+  }, [photo]);
+
+  return url;
 }
 
 export function photoBytesToUrl(photo: Uint8Array): string {

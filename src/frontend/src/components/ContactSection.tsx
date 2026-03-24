@@ -8,7 +8,12 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useSubmitContactForm } from "../hooks/useQueries";
 
-export function ContactSection() {
+interface ContactSectionProps {
+  profile?:
+    | { contactEmail?: string; contactPhone?: string; contactAddress?: string }
+    | undefined;
+}
+export function ContactSection({ profile }: ContactSectionProps) {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -70,7 +75,7 @@ export function ContactSection() {
                     Location
                   </p>
                   <p className="text-foreground/70 font-body text-sm">
-                    Zeedijk, Oostende
+                    {profile?.contactAddress || "Zeedijk, Oostende"}
                     <br />
                     West-Vlaanderen, Belgium
                   </p>
@@ -85,7 +90,7 @@ export function ContactSection() {
                     Email
                   </p>
                   <p className="text-foreground/70 font-body text-sm">
-                    contact@ostende-beachtherapy.be
+                    {profile?.contactEmail || "contact@ostende-beachtherapy.be"}
                   </p>
                 </div>
               </div>
@@ -98,7 +103,7 @@ export function ContactSection() {
                     Phone
                   </p>
                   <p className="text-foreground/70 font-body text-sm">
-                    +32 (0)59 00 00 00
+                    {profile?.contactPhone || "+32 (0)59 00 00 00"}
                   </p>
                 </div>
               </div>

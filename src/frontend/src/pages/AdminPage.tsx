@@ -1,6 +1,12 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -45,7 +51,6 @@ import type { CVEntry, PricingPackage, SessionContentItem } from "../backend.d";
 import { CVType } from "../backend.d";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
 import {
-  photoBytesToUrl,
   useAddOrUpdateCVEntry,
   useAddOrUpdatePricingPackage,
   useAddOrUpdateSessionContentItem,
@@ -57,6 +62,7 @@ import {
   useIsAdmin,
   usePricingPackages,
   useSessionContentItems,
+  useTherapistPhotoUrl,
   useTherapistProfile,
   useUpdateProfilePhoto,
   useUpdateTherapistProfile,
@@ -68,12 +74,26 @@ function ProfileTab() {
   const updateProfile = useUpdateTherapistProfile();
   const updatePhoto = useUpdateProfilePhoto();
   const fileRef = useRef<HTMLInputElement>(null);
-  const [form, setForm] = useState({ name: "", tagline: "", bio: "" });
+  const [form, setForm] = useState({
+    name: "",
+    tagline: "",
+    bio: "",
+    contactEmail: "",
+    contactPhone: "",
+    contactAddress: "",
+  });
   const [initialized, setInitialized] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
   if (profile && !initialized) {
-    setForm({ name: profile.name, tagline: profile.tagline, bio: profile.bio });
+    setForm({
+      name: profile.name,
+      tagline: profile.tagline,
+      bio: profile.bio,
+      contactEmail: profile.contactEmail ?? "",
+      contactPhone: profile.contactPhone ?? "",
+      contactAddress: profile.contactAddress ?? "",
+    });
     setInitialized(true);
   }
 
@@ -84,6 +104,9 @@ function ProfileTab() {
         tagline: form.tagline,
         bio: form.bio,
         photo: profile?.photo ?? new Uint8Array(),
+        contactEmail: form.contactEmail,
+        contactPhone: form.contactPhone,
+        contactAddress: form.contactAddress,
       });
       toast.success("Profile updated!");
     } catch {
@@ -108,10 +131,7 @@ function ProfileTab() {
     }
   };
 
-  const profilePhotoUrl =
-    profile?.photo && profile.photo.length > 0
-      ? photoBytesToUrl(profile.photo)
-      : null;
+  const profilePhotoUrl = useTherapistPhotoUrl(profile?.photo);
 
   return (
     <div className="space-y-6">
@@ -222,6 +242,75 @@ function ProfileTab() {
               </>
             ) : (
               "Save Profile"
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-display text-teal">
+            Contact Information
+          </CardTitle>
+          <CardDescription>
+            Shown in the contact section of your site.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-1.5">
+            <Label className="text-xs font-body font-semibold text-teal uppercase tracking-wide">
+              Email
+            </Label>
+            <Input
+              value={form.contactEmail}
+              onChange={(e) =>
+                setForm((p) => ({ ...p, contactEmail: e.target.value }))
+              }
+              placeholder="contact@yoursite.be"
+              className="rounded-xl"
+              data-ocid="profile.input"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs font-body font-semibold text-teal uppercase tracking-wide">
+              Phone
+            </Label>
+            <Input
+              value={form.contactPhone}
+              onChange={(e) =>
+                setForm((p) => ({ ...p, contactPhone: e.target.value }))
+              }
+              placeholder="+32 ..."
+              className="rounded-xl"
+              data-ocid="profile.input"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs font-body font-semibold text-teal uppercase tracking-wide">
+              Address
+            </Label>
+            <Input
+              value={form.contactAddress}
+              onChange={(e) =>
+                setForm((p) => ({ ...p, contactAddress: e.target.value }))
+              }
+              placeholder="Zeedijk, Oostende, Belgium"
+              className="rounded-xl"
+              data-ocid="profile.input"
+            />
+          </div>
+          <Button
+            onClick={handleSave}
+            disabled={updateProfile.isPending}
+            className="rounded-full bg-tan text-teal-dark hover:bg-tan-dark font-body font-semibold"
+            data-ocid="profile.save_button"
+          >
+            {updateProfile.isPending ? (
+              <>
+                <Loader2 className="mr-2 w-4 h-4 animate-spin" /> Saving...
+              </>
+            ) : (
+              "Save Contact Info"
             )}
           </Button>
         </CardContent>

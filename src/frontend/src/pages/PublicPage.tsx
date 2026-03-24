@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { BioSection } from "../components/BioSection";
 import { CVSection } from "../components/CVSection";
 import { ContactSection } from "../components/ContactSection";
@@ -13,6 +13,7 @@ import {
   usePricingPackages,
   useSeedData,
   useSessionContentItems,
+  useTherapistPhotoUrl,
   useTherapistProfile,
 } from "../hooks/useQueries";
 
@@ -26,7 +27,7 @@ export function PublicPage() {
   const seeded = useRef(false);
   const doSeed = useCallback(() => seedData.mutate(), [seedData.mutate]);
 
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const photoUrl = useTherapistPhotoUrl(profile?.photo);
 
   // Seed if empty
   useEffect(() => {
@@ -37,19 +38,6 @@ export function PublicPage() {
     }
   }, [actor, isFetching, profile, doSeed]);
 
-  // Convert photo bytes to blob URL
-  useEffect(() => {
-    if (!profile?.photo || profile.photo.length === 0) {
-      setPhotoUrl(null);
-      return;
-    }
-    const arr = new Uint8Array(profile.photo);
-    const blob = new Blob([arr], { type: "image/jpeg" });
-    const url = URL.createObjectURL(blob);
-    setPhotoUrl(url);
-    return () => URL.revokeObjectURL(url);
-  }, [profile?.photo]);
-
   return (
     <div className="min-h-screen">
       <Header />
@@ -59,7 +47,7 @@ export function PublicPage() {
         <CVSection entries={cvEntries} />
         <TherapySection items={sessionItems} />
         <PricingSection packages={pricingPackages} />
-        <ContactSection />
+        <ContactSection profile={profile} />
       </main>
       <Footer />
     </div>
