@@ -18,7 +18,7 @@ export function HeroSection({
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('/assets/uploads/soron-oostende-2346999-019d2189-e3f3-7613-8212-6496867c3956-1.jpg')`,
+          backgroundImage: `url('/assets/uploads/armennano-sunset-7335440-019d21b2-0d6a-7662-b2e5-1d1eb789458d-1.jpg')`,
         }}
       />
       {/* Subtle gradient only at very top and very bottom for text legibility */}
@@ -54,10 +54,10 @@ export function HeroSection({
       {/* Spacer pushes bottom content down into the sea/sand area */}
       <div className="flex-1" />
 
-      {/* MIDDLE TEXT — over the sea, below buildings, above the rocks */}
+      {/* BOTTOM TEXT & BUTTONS — in the sand, just under the waterline */}
       <div
         className="relative z-10 container mx-auto px-6 pb-4"
-        style={{ marginBottom: "22vh" }}
+        style={{ marginBottom: "6vh" }}
       >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -80,7 +80,7 @@ export function HeroSection({
           </p>
         </motion.div>
 
-        {/* BUTTONS — pinned just below the text, in the sand area */}
+        {/* BUTTONS */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
