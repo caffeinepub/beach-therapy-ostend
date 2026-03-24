@@ -24,33 +24,33 @@
 
     /* Beach Therapy Palette */
     --background: 0.924 0.028 82;
-    --foreground: 0.2 0.012 220;
+    --foreground: 0.28 0.018 220;
     --card: 0.97 0.006 90;
-    --card-foreground: 0.2 0.012 220;
+    --card-foreground: 0.28 0.018 220;
     --popover: 0.97 0.006 90;
-    --popover-foreground: 0.2 0.012 220;
+    --popover-foreground: 0.28 0.018 220;
 
     /* Deep teal primary */
-    --primary: 0.275 0.068 215;
+    --primary: 0.32 0.075 215;
     --primary-foreground: 0.97 0.006 90;
 
     /* Pale sea blue secondary */
     --secondary: 0.845 0.042 215;
-    --secondary-foreground: 0.275 0.068 215;
+    --secondary-foreground: 0.32 0.075 215;
 
     --muted: 0.9 0.018 82;
     --muted-foreground: 0.5 0.025 215;
 
     /* Tan/beige accent */
-    --accent: 0.735 0.068 77;
-    --accent-foreground: 0.2 0.012 220;
+    --accent: 0.78 0.08 77;
+    --accent-foreground: 0.28 0.018 220;
 
     --destructive: 0.577 0.245 27.325;
     --destructive-foreground: 0.985 0 0;
 
     --border: 0.855 0.018 82;
     --input: 0.97 0.006 90;
-    --ring: 0.275 0.068 215;
+    --ring: 0.32 0.075 215;
 
     --chart-1: 0.646 0.222 41.116;
     --chart-2: 0.6 0.118 184.704;
@@ -59,13 +59,13 @@
     --chart-5: 0.769 0.188 70.08;
 
     --sidebar: 0.924 0.028 82;
-    --sidebar-foreground: 0.2 0.012 220;
-    --sidebar-primary: 0.275 0.068 215;
+    --sidebar-foreground: 0.28 0.018 220;
+    --sidebar-primary: 0.32 0.075 215;
     --sidebar-primary-foreground: 0.97 0.006 90;
     --sidebar-accent: 0.845 0.042 215;
-    --sidebar-accent-foreground: 0.275 0.068 215;
+    --sidebar-accent-foreground: 0.32 0.075 215;
     --sidebar-border: 0.855 0.018 82;
-    --sidebar-ring: 0.275 0.068 215;
+    --sidebar-ring: 0.32 0.075 215;
   }
 
   * {

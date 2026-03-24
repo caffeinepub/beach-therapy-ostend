@@ -8,91 +8,101 @@ interface HeroSectionProps {
   photoUrl: string | null;
 }
 
-export function HeroSection({ profile, photoUrl }: HeroSectionProps) {
+export function HeroSection({
+  profile,
+  photoUrl: _photoUrl,
+}: HeroSectionProps) {
   return (
     <section className="relative min-h-screen flex flex-col" id="hero">
       {/* Beach background */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('/assets/generated/hero-ostend-coastline.dim_1920x1080.jpg')`,
+          backgroundImage: `url('/assets/uploads/soron-oostende-2346999-019d2189-e3f3-7613-8212-6496867c3956-1.jpg')`,
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-teal-dark/75 via-teal/40 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-sea/60" />
+      {/* Subtle gradient only at very top and very bottom for text legibility */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent via-40% to-black/30" />
 
-      {/* Content */}
-      <div className="relative z-10 flex-1 container mx-auto px-6 pt-28 pb-12 flex items-center">
-        <div className="grid md:grid-cols-2 gap-8 items-center w-full">
-          {/* Left: Text */}
-          <motion.div
-            initial={{ opacity: 0, x: -32 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
+      {/* TOP TEXT — sits in the open sky above the buildings */}
+      <div className="relative z-10 container mx-auto px-6 pt-32">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="max-w-xl"
+        >
+          <p className="text-sand/90 font-body text-sm uppercase tracking-[0.3em] mb-3 drop-shadow">
+            Oostende, België · Beach Therapy
+          </p>
+          <h1
+            className="font-display font-bold text-white leading-[1.05] drop-shadow-lg"
+            style={{
+              fontSize: "clamp(2.5rem, 5vw, 4rem)",
+              textShadow: "0 2px 12px rgba(0,0,0,0.35)",
+            }}
           >
-            <p className="text-sand/90 font-body text-sm uppercase tracking-[0.3em] mb-4">
-              Oostende, België · Beach Therapy
-            </p>
-            <h1
-              className="font-display font-bold text-sand-light leading-[1.05] mb-4"
-              style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}
-            >
-              Vind Balans
-              <br />
-              <span className="text-teal-dark">aan de Kust</span>
-              <br />
-              van Oostende
-            </h1>
-            <p className="text-sand/85 font-body text-base leading-relaxed mb-2 max-w-md">
-              Find your balance on the shores of Ostend.
-            </p>
-            <p className="text-sand/75 font-body text-sm leading-relaxed mb-8 max-w-md">
-              {profile?.tagline ||
-                "Professional outdoor therapy sessions where the sea meets healing. Walk, breathe, and reconnect with yourself."}
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Button
-                asChild
-                className="rounded-full bg-tan text-teal-dark font-body font-semibold px-7 py-2.5 hover:bg-tan-dark text-sm transition-all shadow-hero"
-                data-ocid="hero.primary_button"
-              >
-                <a href="#contact">Book a Session</a>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                className="rounded-full border-sand/60 text-sand bg-transparent hover:bg-sand/10 font-body font-semibold px-7 py-2.5 text-sm"
-                data-ocid="hero.secondary_button"
-              >
-                <a href="#about">Learn More</a>
-              </Button>
-            </div>
-          </motion.div>
+            Vind Balans
+            <br />
+            <span className="text-teal-light">aan de Kust</span>
+            <br />
+            van Oostende
+          </h1>
+        </motion.div>
+      </div>
 
-          {/* Right: Therapist photo */}
-          <motion.div
-            initial={{ opacity: 0, x: 32 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-            className="hidden md:flex justify-center md:justify-end"
+      {/* Spacer pushes bottom content down into the sea/sand area */}
+      <div className="flex-1" />
+
+      {/* MIDDLE TEXT — over the sea, below buildings, above the rocks */}
+      <div
+        className="relative z-10 container mx-auto px-6 pb-4"
+        style={{ marginBottom: "22vh" }}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+          className="max-w-lg mb-4"
+        >
+          <p
+            className="text-white/90 font-body text-base leading-relaxed mb-1 drop-shadow"
+            style={{ textShadow: "0 1px 8px rgba(0,0,0,0.4)" }}
           >
-            <div className="relative">
-              <div className="w-72 h-96 lg:w-80 lg:h-[440px] rounded-2xl overflow-hidden shadow-hero border-4 border-sand/30">
-                <img
-                  src={
-                    photoUrl ||
-                    "/assets/generated/therapist-placeholder.dim_600x750.jpg"
-                  }
-                  alt={profile?.name || "Your Therapist"}
-                  className="w-full h-full object-cover object-top"
-                  loading="eager"
-                />
-              </div>
-              {/* Decorative blob */}
-              <div className="absolute -z-10 -bottom-4 -right-4 w-full h-full rounded-2xl bg-sea-light/40" />
-            </div>
-          </motion.div>
-        </div>
+            Find your balance on the shores of Ostend.
+          </p>
+          <p
+            className="text-white/75 font-body text-sm leading-relaxed drop-shadow"
+            style={{ textShadow: "0 1px 8px rgba(0,0,0,0.4)" }}
+          >
+            {profile?.tagline ||
+              "Professional outdoor therapy sessions where the sea meets healing. Walk, breathe, and reconnect with yourself."}
+          </p>
+        </motion.div>
+
+        {/* BUTTONS — pinned just below the text, in the sand area */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.35, ease: "easeOut" }}
+          className="flex flex-wrap gap-3 pb-2"
+        >
+          <Button
+            asChild
+            className="rounded-full bg-tan text-teal-dark font-body font-semibold px-7 py-2.5 hover:bg-tan-dark text-sm transition-all shadow-hero"
+            data-ocid="hero.primary_button"
+          >
+            <a href="#contact">Book a Session</a>
+          </Button>
+          <Button
+            asChild
+            variant="outline"
+            className="rounded-full border-white/60 text-white bg-transparent hover:bg-white/10 font-body font-semibold px-7 py-2.5 text-sm"
+            data-ocid="hero.secondary_button"
+          >
+            <a href="#about">Learn More</a>
+          </Button>
+        </motion.div>
       </div>
 
       {/* Wave divider */}
